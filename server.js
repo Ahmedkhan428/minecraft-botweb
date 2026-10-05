@@ -8,10 +8,9 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 
-// Public folder ka absolute path set karna
+// Public folder configuration
 app.use(express.static(path.join(__dirname, 'public')))
 
-// Root URL par explicit file serve karna
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'))
 })
@@ -41,7 +40,6 @@ io.on('connection', (socket) => {
     bot.on('spawn', () => {
       socket.emit('bot-log', `Success! Bot '${username}' server ke andar chala gaya hai aur active ho gaya hai.`)
       
-      // Anti-AFK loop taake bot kick na ho
       const afkInterval = setInterval(() => {
         if (!bot.entity) {
           clearInterval(afkInterval)
@@ -67,14 +65,6 @@ io.on('connection', (socket) => {
     bot.on('end', () => {
       socket.emit('bot-log', `Bot '${username}' disconnect ho gaya. 5 seconds baad dobara connect hone ki koshish...`)
       if (bot.afkInterval) clearInterval(bot.afkInterval)
-      
-      // Auto reconnect
-      setTimeout(() => {
-        if (activeBots[botId]) {
-          // Reconnect logic agar zaroorat ho
-        }
-      }, 5000)
-      
       delete activeBots[botId]
     })
 
