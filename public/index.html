@@ -36,7 +36,9 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
+    const socket = io(window.location.origin, {
+      transports: ['polling', 'websocket']
+    });
 
     function startBot() {
       const host = document.getElementById('host').value;
