@@ -2,12 +2,19 @@ const express = require('express')
 const http = require('http')
 const { Server } = require('socket.io')
 const mineflayer = require('mineflayer')
+const path = require('path')
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 
-app.use(express.static('public'))
+// Public folder ka absolute path set karna
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Root URL par explicit file serve karna
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
 let activeBots = {}
 
@@ -93,6 +100,6 @@ io.on('connection', (socket) => {
 })
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server chal raha hai on port ${PORT}`);
 })
